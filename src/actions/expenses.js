@@ -28,8 +28,8 @@ export const removeExpense = ({ id } = {}) => ({
 });
 
 // EDIT_EXPENSE
-export const editExpense = (id, updates) => ({
+export const editExpense = (id, updates) => ({ // updates is an object containing all the required changes
     type: 'EDIT_EXPENSE',
     id,
-    updates
+    updates // updates is an object containing all the required changes
 });
