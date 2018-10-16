@@ -1,18 +1,20 @@
 // install -> import -> use
 
-import React from 'react';
+import React from "react";
 // import 'react-dates/initialize'; // this might be required
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import AppRouter from './routers/AppRouter';
-import configureStore from './store/configureStore';
-import { addExpense } from './actions/expenses'; // needs to have curly braces to explicitly call the right action (without curly braces it will call the default action and there isn't one)
-import { setTextFilter } from './actions/filters';
-import getVisibleExpenses from './selectors/expenses';
-import 'normalize.css/normalize.css';
-import './styles/styles.scss';
-import 'react-dates/lib/css/_datepicker.css';
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import AppRouter from "./routers/AppRouter";
+import configureStore from "./store/configureStore";
+import { addExpense } from "./actions/expenses"; // needs to have curly braces to explicitly call the right action (without curly braces it will call the default action and there isn't one)
+import { setTextFilter } from "./actions/filters";
+import getVisibleExpenses from "./selectors/expenses";
+import "normalize.css/normalize.css";
+import "./styles/styles.scss";
+import "react-dates/lib/css/_datepicker.css";
+import "./firebase/firebase";
 
+// import "./playground/promises";
 
 const store = configureStore();
 
@@ -26,18 +28,15 @@ const store = configureStore();
 //     store.dispatch(setTextFilter('bill'));
 // }, 3000)
 
-
 const jsx = (
-    <Provider store={store}>
-        <AppRouter />
-    </Provider>
-)
-
+  <Provider store={store}>
+    <AppRouter />
+  </Provider>
+);
 
 console.log(store.getState());
 
-ReactDOM.render(jsx, document.getElementById('app'));
-
+ReactDOM.render(jsx, document.getElementById("app"));
 
 // class OldSyntax {
 //     constructor() {
@@ -64,9 +63,6 @@ ReactDOM.render(jsx, document.getElementById('app'));
 // const newGetGreeting = newSyntax.getGreeting;
 // console.log(newGetGreeting());
 
-
-
-
 // ===========================================
 // For testing/examples
 // ===========================================
@@ -78,7 +74,6 @@ ReactDOM.render(jsx, document.getElementById('app'));
 // console.log(validator.isEmail('test@gmail.com'));
 
 // isEmail(str[, options])
-
 
 //   =======================================
 // The Below for testing/training purposes
