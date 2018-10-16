@@ -1,21 +1,23 @@
-
 // This file controls what is actuallt rendered to the screen
 
-import React from 'react';
-import { connect } from 'react-redux'
-import ExpenseListItem from './ExpenseListItem';
-import selectExpenses from '../selectors/expenses';
+import React from "react";
+import { connect } from "react-redux";
+import ExpenseListItem from "./ExpenseListItem";
+import selectExpenses from "../selectors/expenses";
 
-const ExpenseList = (props) => (
-    <div>
-        <h1>Expense List</h1>
-        {props.expenses.map((expense) => {
-            return (
-                <ExpenseListItem key={expense.id} {...expense} /> // returning an instance of ExpenseListItem
-                // key={expense.id} is required to access each index on the array via a unique value - in this case it is id
-            )
-        })}
-    </div>
+export const ExpenseList = (
+  props // set as export for testing
+) => (
+  <div>
+    {props.expenses.length === 0 ? (
+      <p>No Expenses</p>
+    ) : (
+      props.expenses.map(expense => {
+        return <ExpenseListItem key={expense.id} {...expense} />; // returning an instance of ExpenseListItem
+        // key={expense.id} is required to access each index on the array via a unique value - in this case it is id
+      })
+    )}
+  </div>
 );
 
 // when you connect a component to the redux store it's reactive (as the store changes your component is going to get re-rendered with those new values)
@@ -23,10 +25,11 @@ const ExpenseList = (props) => (
 // All the developer has to do is define how want to render things
 // want to try and get as many components as possible into the presentational component pattern
 
-const mapStateToProps = (state) => { // as the const implies this links the state to this components props - this defines the things want to get off of the store
-    return {
-        expenses: selectExpenses(state.expenses, state.filters)
-    };
+const mapStateToProps = state => {
+  // as the const implies this links the state to this components props - this defines the things want to get off of the store
+  return {
+    expenses: selectExpenses(state.expenses, state.filters)
+  };
 };
 
 export default connect(mapStateToProps)(ExpenseList); // defines the component want to get a connected version of. This allows the named component to access any data it needs from the store
