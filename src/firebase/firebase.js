@@ -1,49 +1,105 @@
 import * as firebase from "firebase";
 
-// Key goes here
+const config = {
+  apiKey: "AIzaSyD_5S7U1bRWTGmtGToS6AU5ANAnNQ-GzKU",
+  authDomain: "expensify-7565b.firebaseapp.com",
+  databaseURL: "https://expensify-7565b.firebaseio.com",
+  projectId: "expensify-7565b",
+  storageBucket: "expensify-7565b.appspot.com",
+  messagingSenderId: "130470381618"
+};
 
 firebase.initializeApp(config);
 
 const database = firebase.database();
-const attributes = firebase.database();
 
-database.ref().set({
-  // .ref - short for reference, can reference different parts of the database, no arguments means accessing the root of the database
-  // .set - sets the value for the given reference
-  // .set does not have to take an object, can take any of the data types can store inside of firebase
-  name: "Smudge the Pleco",
-  age: 26,
-  isSingle: false,
-  location: {
-    city: "London",
-    country: "United Kingdom"
+// **********************************************
+database.ref().on(
+  "value",
+  (snapshot) => {
+    const data = snapshot.val();
+    console.log(`${data.name} is a ${data.job.title} at ${data.job.company}`);
+  },
+  (error) => {
+    console.log("error with data fetching", error);
   }
-});
+);
 
-// database.ref().set("This is Pleco's test data");
-// - this set will wipe out what has gone before (the original set)
+// **********************************************
 
-// database.ref("age").set({
-//   age: 27
-// });
-// this set (before passing in 'age') will not just overwrite age but all the other properties above as well
+const onValueChange = database.ref().on(
+  // on() allows to listen for something over and over again
+  "value", // *** See below, the value event - the data stored at this location
+  // able to get the value back from the db initially and then every time it changes
+  (snapshot) => {
+    console.log(snapshot.val());
+  },
+  (error) => {
+    console.log("error with data fetching", error);
+  }
+);
 
-database.ref("age").set(27);
-//This will change only the part of the database we want to change
-// as called a
+// ***Event type: One of the following strings: "value", "child_added", "child_changed", "child_removed", or "child_moved."
 
-database.ref("location/city").set("New York");
+setTimeout(() => {
+  database.ref("age").set(29);
+}, 3500);
 
-database.ref("attributes").set({
-  height: 73,
-  weight: 150
-});
+setTimeout(() => {
+  database.ref().off("value", onValueChange); // will cancel all subscriptions on the given reference
+}, 7000);
 
-// the data changing is asynchronous, just because have call to set data, does not mean it completes before the next line runs
-// our calls to set need to communicate with the firebase servers, have to:
-// - Initialise the request off to the servers
-// - The servers have to process that request then respond - letting us know if things went well or whether there was a problem
+setTimeout(() => {
+  database.ref("age").set(30);
+}, 10500);
 
-// need  a way to know whether the data has actually changed/failed to change for some reason
+// *************************************************
 
-// Need to use 'promises' - i.e. so something after a long running task completes
+// so can get back initial value for the db and every single time it changes
+// do not use promises as will onle get a resolve or reject once with a single value, here want to run it over and over again on data changes
+
+// ***************************************
+// putting something in .ref(), will determine what data comes back
+// ref() will return everything (refers to the root of the db)
+// ref('location') returns everything nested inside location
+// ref('location/city') will just return the indiv city value i.e. 'Seattle' in this example
+
+// database
+//   .ref("location")
+//   .once("value") // to fetch a single time *****Returns a promise*****
+//   .then(snapshot => {
+//     // on snapshot, have access to our data
+//     const val = snapshot.val(); // to extract the object
+//     console.log(val);
+//   })
+//   .catch(error => {
+//     console.log("error fetching data", error);
+//   });
+// ************************************
+
+// database
+//   .ref()
+//   .set({
+//     name: "Smudge the Pleco",
+//     age: 30,
+//     stressLevel: 8,
+//     job: {
+//       title: "Software developer",
+//       company: "Amazon"
+//     },
+//     location: {
+//       city: "Seattle",
+//       country: "United States"
+//     }
+//   })
+//   .then(() => {
+//     console.log("Data is saved!"); // lets you know your changes were successfully synced
+//   })
+//   .catch((error) => {
+//     // function to run when data fails to sync
+//     console.log("This failed", error);
+//   });
+
+// two ways to fetch data:
+// fetch data a single time
+// fetch data by subscribing - allows to be ntoifed of changes
